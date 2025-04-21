@@ -1,0 +1,58 @@
+@use 'variables' as *;
+
+header {
+    display: flex;
+    font-size: 1em;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+  
+    .container {
+      display: flex;
+      gap: 30 px;
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  
+    .nav-left,
+    .nav-center,
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+  
+    .logo span {
+      color: $primary-color;
+      font-weight: bold;
+      font-size: 2em;
+    }
+  
+    .nav-link {
+      color: #333;
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+  
+      .icon {
+        font-style: normal;
+        color: #333;
+      }
+    }
+  
+    .avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: #0057ff;
+      margin-left: 15px;
+    }
+  }
+  

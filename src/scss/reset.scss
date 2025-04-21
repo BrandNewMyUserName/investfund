@@ -1,0 +1,61 @@
+/* reset.scss */
+
+/* Встановлюємо усім елементам нульові відступи та бордери */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Видаляємо межі для елементів списків */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Видаляємо підкреслення у посилань */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Уніфікуємо стилі заголовків */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+  font-size: 100%;
+}
+
+/* Робимо елементи форм однорідними */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+/* Скидуємо таблиці */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Скидуємо курсор для кнопок */
+button {
+  cursor: pointer;
+  background: none;
+}
+
+/* Ставимо HTML та body на повну ширину і висоту */
+html, body {
+  height: 100%;
+  width: 100%;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
