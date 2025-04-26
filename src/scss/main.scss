@@ -1,18 +1,49 @@
 // Importing other SCSS files
 // @import 'reset'; 
-@use 'reset';
-@use 'header';
+@use 'reset' as *;
+@use 'header' as *;
 @use 'variables' as *;
 
 
-
-
+// Загальні міксини
+@mixin heading-style($font-size, $line-height, $font-weight) {
+  font-family: $font-family-base;
+  font-size: $font-size;
+  line-height: $line-height;
+  font-weight: $font-weight;
+}
 
 html {
-    font-family: 'Inter', sans-serif;
+    font-family: $font-family-base;
     font-size: $font-size;
-    background-color: $background-color;
 }
+
+// Стилі заголовків і текстів
+h1 {
+  @include heading-style(56px, 64px, bold);
+}
+
+h2 {
+  @include heading-style(40px, 48px, 600); // semibold ~ 600
+}
+
+h3 {
+  @include heading-style(32px, 40px, 500); // medium ~ 500
+}
+
+.subtitle {
+  @include heading-style(24px, 32px, 400); // regular ~ 400
+}
+
+.small {
+  @include heading-style(14px, 20px, 400);
+}
+
+.label {
+  @include heading-style(12px, 16px, 500);
+}
+
+
 
 .search-box {
     display: flex;
@@ -65,11 +96,21 @@ html {
   
   // style.scss
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #fff;
+    @include heading-style(16px, 24px, 400);
+    background-color: $background-color;
     color: #000;
+
+    .title{
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 4.375rem 30rem 3.125rem 30rem;
+      align-items: center;
+    }
+    
+    .content{
+      display: flex;
+    }
   }
   
   .container {
@@ -82,7 +123,7 @@ body {
     flex: 2;
   }
   
-  .assets-table {
+  .content__assets-table {
     width: 100%;
     border-collapse: collapse;
   
@@ -138,7 +179,7 @@ body {
     }
   }
   
-  .news {
+  .content__news {
     flex: 1;
     border-left: 1px solid #ccc;
     padding-left: 20px;
