@@ -7,11 +7,18 @@ interface Data {
   volume: string;
 }
 
+interface News {
+  news_id: number;
+  title: string;
+  datetime_announced: string;
+  source: string;
+}
+
 // Map to store previous close prices for each symbol
 const priceHistory: { [symbol: string]: number } = {};
 
 // Connect to WebSocket server
-const ws = new WebSocket('ws://localhost:3000/ws'); // Proxied to ws://localhost:8080
+const ws = new WebSocket('ws://localhost:8080'); // Corrected port to 8080
 
 ws.onopen = () => {
   console.log('Connected to WebSocket server');
@@ -93,3 +100,138 @@ function updateTable(data: Data) {
 
   priceHistory[data.symbol] = closePrice;
 }
+
+// Fetch and render news
+async function fetchNews() {
+  try {
+    const response = await fetch('/api/news');
+    const news: News[] = await response.json();
+    const newsList = document.getElementById('news-list') as HTMLUListElement;
+    if (!newsList) {
+      console.error('News list element not found');
+      return;
+    }
+    newsList.innerHTML = ''; // Clear existing news
+    news.forEach(item => {
+      const li = document.createElement('li');
+      const date = new Date(item.datetime_announced).toLocaleString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+      li.innerHTML = `
+        <strong>${item.title}</strong>
+        <span><a href="${item.source}" target="_blank">Source</a> – ${date}</span>
+      `;
+      newsList.appendChild(li);
+    });
+  } catch (error) {
+    console.error('Error fetching news:', error);
+  }
+}
+
+// Auth popup logic
+function initializeAuthPopup() {
+  const authPopup = document.getElementById('auth-popup') as HTMLElement;
+  const loginForm = document.getElementById('login-form') as HTMLElement;
+  const registerForm = document.getElementById('register-form') as HTMLElement;
+  const tabs = document.querySelectorAll('.auth-tabs .tab') as NodeListOf<HTMLElement>;
+  const closeBtn = document.querySelector('.auth-popup .close-btn') as HTMLElement;
+
+  // Assume header has login/register buttons
+  const loginBtn = document.querySelector('.header-login-btn') as HTMLElement;
+  const registerBtn = document.querySelector('.header-register-btn') as HTMLElement;
+
+  if (loginBtn) {
+    loginBtn.addEventListener('click', () => {
+      authPopup.style.display = 'block';
+      loginForm.style.display = 'block';
+      registerForm.style.display = 'none';
+      tabs.forEach(tab => tab.classList.remove('active'));
+      tabs[0].classList.add('active');
+    });
+  }
+
+  if (registerBtn) {
+    registerBtn.addEventListener('click', () => {
+      authPopup.style.display = 'block';
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+      tabs.forEach(tab => tab.classList.remove('active'));
+      tabs[1].classList.add('active');
+    });
+  }
+
+  closeBtn.addEventListener('click', () => {
+    authPopup.style.display = 'none';
+  });
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      if (tab.dataset.tab === 'login') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+      } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+      }
+    });
+  });
+
+  loginForm.querySelector('form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = (loginForm.querySelector('input[type="text"]') as HTMLInputElement).value;
+    const password = (loginForm.querySelector('input[type="password"]') as HTMLInputElement).value;
+    try {
+      const response = await fetch('http://localhost:5000/api/user/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const result = await response.json();
+      if (response.ok) {
+        alert('Login successful');
+        authPopup.style.display = 'none';
+      } else {
+        alert(result.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('An error occurred');
+    }
+  });
+
+  registerForm.querySelector('form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = (registerForm.querySelector('input[type="text"]') as HTMLInputElement).value;
+    const email = (registerForm.querySelector('input[type="email"]') as HTMLInputElement).value;
+    const password = (registerForm.querySelector('input[type="password"]') as HTMLInputElement).value;
+    try {
+      const response = await fetch('http://localhost:5000/api/user/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+      });
+      const result = await response.json();
+      if (response.ok) {
+        alert('Registration successful');
+        authPopup.style.display = 'none';
+      } else {
+        alert(result.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('An error occurred');
+    }
+  });
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+  fetchNews();
+  initializeAuthPopup();
+});

@@ -4,6 +4,8 @@ import path from 'path';
 import http from 'http';
 import { fileURLToPath } from 'url';
 
+import '../lab_7_arch/index.js'; 
+
 const app = express();
 const port = 8080;
 
