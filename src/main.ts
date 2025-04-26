@@ -1,6 +1,5 @@
 import './scss/main.scss';
 
-// src/main.ts
 interface Data {
   symbol: string;
   closePrice: string;

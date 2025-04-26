@@ -6,18 +6,15 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "dev:frontend": "vite",
-    "dev:backend": "node server/server.js",
-    "build": "vite build",
+    "dev:backend": "tsx server/server.ts",
+    "build": "tsc --project tsconfig.server.json && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/express": "^5.0.1",
     "@types/node": "^22.15.2",
-    "@types/ws": "^8.18.1",
     "concurrently": "^9.1.2",
-    "nodemon": "^3.1.10",
     "sass-embedded": "^1.86.3",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
     "typescript": "~5.7.2",
     "vite": "^6.2.0",
     "vite-plugin-pug": "^0.4.1"
