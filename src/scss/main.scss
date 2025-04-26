@@ -3,6 +3,7 @@
 @use 'reset' as *;
 @use 'header' as *;
 @use 'variables' as *;
+@use 'auth' as *;
 
 html {
   font-family: $font-family-base;

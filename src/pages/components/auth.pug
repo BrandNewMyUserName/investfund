@@ -1,0 +1,19 @@
+#auth-popup.auth-popup(style='display: none;')
+  .auth-container
+    button.close-btn(type='button') ×
+    .auth-tabs
+      button.tab.active(data-tab='login') Login
+      button.tab(data-tab='register') Register
+    #login-form.auth-form
+      h3 Login
+      form
+        input(type='text', placeholder='Username', required)
+        input(type='password', placeholder='Password', required)
+        button(type='submit') Login
+    #register-form.auth-form(style='display: none;')
+      h3 Register
+      form
+        input(type='text', placeholder='Username', required)
+        input(type='email', placeholder='Email', required)
+        input(type='password', placeholder='Password', required)
+        button(type='submit') Register
