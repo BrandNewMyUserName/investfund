@@ -1,57 +1,45 @@
+doctype html
+html(lang='ua')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Vite+pug
+    link(rel='stylesheet', href='/assets/css/main.css')
+    script(type='module', src='/src/main.ts') // Include your TypeScript entry point
+  body
+    include ./components/header.pug
+    section  
+        .title 
+            h2 Explore investing
+            .section
+            .search-box
+                .icon
+                svg(width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg")
+                    path(d="M21 21L15 15M10 18C5.58 18 2 14.42 2 10C2 5.58 5.58 2 10 2C14.42 2 18 5.58 18 10C18 14.42 14.42 18 10 18Z" stroke="#4a4a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+                input.search-asset(type="text" placeholder="Search for an asset")
 
-doctype html 
-html(lang = 'ua')
-    head 
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title= 'Vite+pug'
-        link(rel='stylesheet', href='/assets/css/main.css')
-    body 
-        include ./components/header.pug
-        section  
-            .title 
-                h2 Explore investing
-                .section
-                .search-box
-                    .icon
-                    svg(width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg")
-                        path(d="M21 21L15 15M10 18C5.58 18 2 14.42 2 10C2 5.58 5.58 2 10 2C14.42 2 18 5.58 18 10C18 14.42 14.42 18 10 18Z" stroke="#4a4a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
-                    input.search-asset(type="text" placeholder="Search for an asset")
-
-        section.content
+    section.content
+        .content__assets
+            h3 Assets prices
             table.content__assets-table
                 thead
                     tr
-                        th Name
-                        th Price
-                        th Change
-                        th Market Cap
-                tbody
-                    tr
-                        td 
-                            a(href="#") Bitcoin (BTC)
-                        td $ 42,000.00
-                        td +2.5%
-                        td $ 800B
-                    tr
-                        td 
-                            a(href="#") Ethereum (ETH)
-                        td $ 3,000.00
-                        td +1.2%
-                        td $ 350B
-
+                    th Ticker
+                    th Price
+                    th 24h Change(USD)
+                    th 24h Volume(USD)
+                tbody#assets-table-body
+                    // Rows will be dynamically added by JavaScript
 
         .content__news
-            h2 Latest news
+            h3 Latest news
             ul.news-list
-            li
-                strong Powell's Independence Tested by Trump's Monetary Policy Demands
-                span CNN Business – 12:28 March 15, 2022
-            li
-                strong Tariffs are disrupting the spring homebuying season
-                span Yahoo Finance – 12:15 March 15, 2022
-            li
-                strong China set to leave lending rates steady, but tariffs raise easing bets
-                span WSJ – 11:20 March 15, 2022
-
-
+                li
+                    strong Powell's Independence Tested by Trump's Monetary Policy Demands
+                    span CNN Business – 12:28 March 15, 2022
+                li
+                    strong Tariffs are disrupting the spring homebuying season
+                    span Yahoo Finance – 12:15 March 15, 2022
+                li
+                    strong China set to leave lending rates steady, but tariffs raise easing bets
+                    span WSJ – 11:20 March 15, 2022

@@ -3,3 +3,36 @@ $background-color: #FFFFFF;
 $primary-color: #0052FF;
 $secondary-color: #D9D9D9;
 $font-family-base: 'Inter', sans-serif;
+
+
+// Загальні міксини
+@mixin heading-style($font-size, $line-height, $font-weight) {
+    font-size: $font-size;
+    line-height: $line-height;
+    font-weight: $font-weight;
+  }
+  
+  // Стилі заголовків і текстів
+  h1 {
+    @include heading-style(56px, 64px, bold);
+  }
+  
+  h2 {
+    @include heading-style(40px, 48px, 600); // semibold ~ 600
+  }
+  
+  h3 {
+    @include heading-style(32px, 40px, 500); // medium ~ 500
+  }
+  
+  .subtitle {
+    @include heading-style(24px, 32px, 400); // regular ~ 400
+  }
+  
+  .small {
+    @include heading-style(14px, 20px, 400);
+  }
+  
+  .label {
+    @include heading-style(12px, 16px, 500);
+  }
