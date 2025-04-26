@@ -14,6 +14,12 @@ interface News {
   source: string;
 }
 
+function getSourceName(url: string): string {
+  const urlObj = new URL(url);
+  const hostname = urlObj.hostname.replace('www.', '').replace('.com', '');
+  return hostname.charAt(0).toUpperCase() + hostname.slice(1);
+}
+
 // Map to store previous close prices for each symbol
 const priceHistory: { [symbol: string]: number } = {};
 
@@ -106,6 +112,7 @@ async function fetchNews() {
   try {
     const response = await fetch('/api/news');
     const news: News[] = await response.json();
+    news.sort((a, b) => new Date(b.datetime_announced).getTime() - new Date(a.datetime_announced).getTime());
     const newsList = document.getElementById('news-list') as HTMLUListElement;
     if (!newsList) {
       console.error('News list element not found');
@@ -123,7 +130,7 @@ async function fetchNews() {
       });
       li.innerHTML = `
         <strong>${item.title}</strong>
-        <span><a href="${item.source}" target="_blank">Source</a> – ${date}</span>
+        <span><a href="${item.source}" target="_blank">${getSourceName(item.source)}</a> – ${date}</span>
       `;
       newsList.appendChild(li);
     });

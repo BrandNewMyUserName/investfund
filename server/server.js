@@ -42,8 +42,8 @@ async function fetchSymbols() {
     console.error('Error fetching symbols:', error);
     return [
       'btcusdt',
-      'bnbusdt',
-      'ethusdt'
+      'ethusdt',
+      'bnbusdt'
     ]; 
   }
 };
