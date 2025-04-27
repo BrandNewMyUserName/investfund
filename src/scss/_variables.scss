@@ -1,11 +1,31 @@
+@use "sass:color";
+
+
 $font-size: 1rem;
-$background-color: #FFFFFF;
+$background-color: #FBFBFC;
 $primary-color: #0052FF;
 $secondary-color: #D9D9D9;
 $font-family-base: 'Inter', sans-serif;
 
 
 // Загальні міксини
+@mixin button-style($height, $width, $color) {
+  height: $height;
+  width: $width;
+  background-color: $color;
+  border-radius: 50px;
+  font-weight: bold;
+  @if $color == $primary-color {
+    color: white;
+  } @else {
+    color: black;
+  }
+
+  &:hover {
+    background-color: color.adjust($color, $lightness: -10%);
+  }
+}
+
 @mixin heading-style($font-size, $line-height, $font-weight) {
     font-size: $font-size;
     line-height: $line-height;

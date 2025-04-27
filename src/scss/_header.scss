@@ -22,7 +22,7 @@ header {
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 50px;
+      gap: 1rem;
     }
   
     .logo span {
@@ -52,5 +52,16 @@ header {
       background-color: #0057ff;
       margin-left: 15px;
     }
+
+    .sign-in{
+      @include button-style(45px, 116px, $secondary-color);
+
+
+    }
+
+    .sign-up{
+      @include button-style(45px, 116px, $primary-color) ;
+
+      }
   }
   
