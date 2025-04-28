@@ -1,5 +1,4 @@
 // Importing other SCSS files
-// @import 'reset'; 
 @use 'reset' as *;
 @use 'header' as *;
 @use 'variables' as *;
@@ -9,6 +8,11 @@ html {
   font-family: $font-family-base;
   font-size: $font-size;
 }
+
+.link-hover:hover {
+  text-decoration: underline;
+}
+
 
 .search-box {
     display: flex;

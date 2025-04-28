@@ -38,6 +38,7 @@ header {
       display: flex;
       align-items: center;
       gap: 4px;
+      
   
       &:hover {
         text-decoration: underline;
@@ -53,13 +54,13 @@ header {
       margin-left: 15px;
     }
 
-    .sign-in{
+    .login-btn{
       @include button-style(45px, 116px, $secondary-color);
 
 
     }
 
-    .sign-up{
+    .register-btn{
       @include button-style(45px, 116px, $primary-color) ;
 
       }

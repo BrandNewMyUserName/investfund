@@ -5,13 +5,14 @@ export function initializeAuthPopup() {
     const tabs = document.querySelectorAll('.auth-tabs .tab') as NodeListOf<HTMLElement>;
     const closeBtn = document.querySelector('.auth-popup .close-btn') as HTMLElement;
   
-    // Assume header has login/register buttons
-    const loginBtn = document.querySelector('.header-login-btn') as HTMLElement;
-    const registerBtn = document.querySelector('.header-register-btn') as HTMLElement;
+    
+    const loginBtn = document.querySelector('.login-btn') as HTMLElement;
+    const registerBtn = document.querySelector('.register-btn') as HTMLElement;
   
+    // Event listeners for login and register button
     if (loginBtn) {
       loginBtn.addEventListener('click', () => {
-        authPopup.style.display = 'block';
+        authPopup.style.display = 'flex';
         loginForm.style.display = 'block';
         registerForm.style.display = 'none';
         tabs.forEach(tab => tab.classList.remove('active'));
@@ -19,9 +20,10 @@ export function initializeAuthPopup() {
       });
     }
   
+    // Event listeners for register button
     if (registerBtn) {
       registerBtn.addEventListener('click', () => {
-        authPopup.style.display = 'block';
+        authPopup.style.display = 'flex';
         loginForm.style.display = 'none';
         registerForm.style.display = 'block';
         tabs.forEach(tab => tab.classList.remove('active'));
@@ -49,13 +51,13 @@ export function initializeAuthPopup() {
   
     loginForm.querySelector('form')?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const username = (loginForm.querySelector('input[type="text"]') as HTMLInputElement).value;
+      const email = (loginForm.querySelector('input[type="text"]') as HTMLInputElement).value;
       const password = (loginForm.querySelector('input[type="password"]') as HTMLInputElement).value;
       try {
-        const response = await fetch('http://localhost:5000/api/user/login', {
+        const response = await fetch('/api/user/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify({ email, password })
         });
         const result = await response.json();
         if (response.ok) {
@@ -72,14 +74,14 @@ export function initializeAuthPopup() {
   
     registerForm.querySelector('form')?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const username = (registerForm.querySelector('input[type="text"]') as HTMLInputElement).value;
+      const name = (registerForm.querySelector('input[type="text"]') as HTMLInputElement).value;
       const email = (registerForm.querySelector('input[type="email"]') as HTMLInputElement).value;
       const password = (registerForm.querySelector('input[type="password"]') as HTMLInputElement).value;
       try {
-        const response = await fetch('http://localhost:5000/api/user/register', {
+        const response = await fetch('/api/user/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, email, password })
+          body: JSON.stringify({ name, email, password })
         });
         const result = await response.json();
         if (response.ok) {

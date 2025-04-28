@@ -131,7 +131,7 @@ async function fetchNews() {
       });
       li.innerHTML = `
         <strong>${item.title}</strong>
-        <span><a href="${item.source}" target="_blank">${getSourceName(item.source)}</a> – ${date}</span>
+        <span><a href="${item.source}" target="_blank" class="link-hover">${getSourceName(item.source)}</a> – ${date}</span>
       `;
       newsList.appendChild(li);
     });
