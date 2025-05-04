@@ -20,7 +20,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ""), // Прибрати "/api" в реальному запиті
       },
       "/ws": {
-        target: "ws://localhost:8080", // WebSocket окремо на 8080
+        target: "ws://localhost:5000", // WebSocket окремо на 8080
         ws: true,
       },
     },

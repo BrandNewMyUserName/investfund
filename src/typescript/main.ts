@@ -25,7 +25,7 @@ function getSourceName(url: string): string {
 const priceHistory: { [symbol: string]: number } = {};
 
 // Connect to WebSocket server
-const ws = new WebSocket('ws://localhost:8080'); // Corrected port to 8080
+const ws = new WebSocket('ws://localhost:5000'); // Corrected port to 8080
 
 ws.onopen = () => {
   console.log('Connected to WebSocket server');
