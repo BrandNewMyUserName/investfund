@@ -7,7 +7,11 @@ header
       a.nav-link(href="#") Assets
       button.nav-link(href="#") My portfolio
     .nav-right
-      button.login-btn(onClick="document.querySelector('#auth-popup').style.display = 'block';") Sign in
-      button.register-btn(onClick="document.querySelector('#auth-popup').style.display = 'block';") Sign up
-      //- .avatar
-        svg(width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg")
+      if user
+        .avatar
+          svg(width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg")
+            path(d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z", fill="currentColor")
+        button.logout-btn(onclick="logout()") Logout
+      else
+        button.login-btn(onclick="document.querySelector('#auth-popup').style.display = 'block';") Sign in
+        button.register-btn(onclick="document.querySelector('#auth-popup').style.display = 'block';") Sign up

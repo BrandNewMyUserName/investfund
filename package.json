@@ -23,7 +23,9 @@
     "vite-plugin-pug": "^0.4.1"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.1.0",
+    "express-session": "^1.18.1",
     "ws": "^8.18.1"
   }
 }

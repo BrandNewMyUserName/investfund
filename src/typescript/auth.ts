@@ -57,8 +57,10 @@ export function initializeAuthPopup() {
         const response = await fetch('/api/user/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ email, password })
         });
+        console.log('Response:', response);
         const result = await response.json();
         if (response.ok) {
           alert('Login successful');

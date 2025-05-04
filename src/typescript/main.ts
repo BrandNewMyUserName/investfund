@@ -141,7 +141,12 @@ async function fetchNews() {
 }
 
 // Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
+// document.addEventListener('DOMContentLoaded', () => {
+//   fetchNews();
+//   initializeAuthPopup();
+// });
+
+window.onload = () => {
   fetchNews();
   initializeAuthPopup();
-});
+};

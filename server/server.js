@@ -1,99 +1,64 @@
 import express from 'express';
-import { WebSocketServer, WebSocket } from 'ws';
+import session from 'express-session';
+import cors from 'cors';
 import path from 'path';
 import http from 'http';
 import { fileURLToPath } from 'url';
-
+import bodyParser from 'body-parser';
 import '../lab_7_arch/index.js'; 
+import userRoutes from '../lab_7_arch/router/user.router.js';
+
+
+import { initializeWebSocket, setupWebSocketServer } from './websocket.js';
+import sessionConfig from './config/sessionConfig.js';
+
 
 const app = express();
 const port = 8080;
 
-// Get __dirname equivalent in ES modules
+// __dirname для ES-модулів
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve static files in production
+// Підключення middleware
+app.use(bodyParser.json());
+app.use(cors({
+  origin: 'http://localhost:3000', // твій фронтенд
+  credentials: true // дозволити надсилати cookies
+}));
+app.use(express.json());
+app.use(session(sessionConfig));
+
+
+// Налаштування шаблонізатора
+app.set('views', path.join(__dirname, '../src'));
+app.set('view engine', 'pug');
+
+// Статика або рендер у залежності від оточення
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../dist')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+  app.get('/', (req, res) => {
+    res.render('index', { user: req.session.user || null });
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.render('index', { user: req.session.user || null });
   });
 }
 
-// Create HTTP server
+// Підключити роутинг
+app.use('/api', userRoutes); 
+
+// Створити сервер
 const server = http.createServer(app);
 
-// Start server
-server.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+// Запустити WebSocket сервер
+setupWebSocketServer(server);
 
-// Set up WebSocket server
-const wss = new WebSocketServer({ server });
-
-// Fetch symbols from /api/instrument
-async function fetchSymbols() {
-  try {
-    const response = await fetch('http://localhost:5000/api/instrument');
-    const instruments = await response.json();
-    return instruments.map(instrument => instrument.symbol);
-  } catch (error) {
-    console.error('Error fetching symbols:', error);
-    return [
-      'btcusdt',
-      'ethusdt',
-      'bnbusdt'
-    ]; 
-  }
-};
-
-// Initialize WebSocket connection
-async function initializeWebSocket() {
-  const symbols = await fetchSymbols();
-  const streams = symbols.map((symbol) => `${symbol}@miniTicker`).join('/');
-  const wsUrl = `wss://fstream.binance.com/stream?streams=${streams}`;
-  const binanceWs = new WebSocket(wsUrl);
-
-  binanceWs.on('open', () => {
-    console.log('Connected to Binance Futures WebSocket');
-  });
-
-  binanceWs.on('message', (data) => {
-    const message = JSON.parse(data.toString());
-    const { s: symbol, c: closePrice, o: openPrice, q: volume } = message.data;
-
-    // Broadcast to all connected browser clients
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(
-          JSON.stringify({
-            symbol,
-            closePrice,
-            openPrice,
-            volume,
-          })
-        );
-      }
-    });
-  });
-
-  binanceWs.on('error', (error) => {
-    console.error(`Binance WebSocket error: ${error.message}`);
-  });
-
-  binanceWs.on('close', () => {
-    console.log('Binance WebSocket connection closed');
-  });
-}
-
-// Start WebSocket
+// Ініціалізувати WebSocket для Binance
 initializeWebSocket();
 
-// Handle browser WebSocket connections
-wss.on('connection', (ws) => {
-  console.log('Browser client connected');
-  ws.on('close', () => {
-    console.log('Browser client disconnected');
-  });
+// Стартувати сервер
+server.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
 });
