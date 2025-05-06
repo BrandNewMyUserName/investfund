@@ -10,7 +10,8 @@ router.post('/', userController.create); // Create new user
 router.put('/:user_id', userController.update); // Update user by ID
 router.delete('/:user_id', userController.delete); // Delete user by ID
 router.post('/login', userController.login); // Login user by email and password
+router.get('/current', userController.getCurrentUser);
 router.delete('/register', userController.register); // Register user 
-// router.delete('/logout', userController.logout); // Logout user 
+router.post('/logout', userController.logout);
 
 module.exports = router;

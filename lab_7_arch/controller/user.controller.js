@@ -1,13 +1,13 @@
 const User = require('../model/user.model');
 
 exports.findAll = function(req, res) {
-    User.findAll(function(err, User) {
+    User.findAll(function(err, users) {
         if(err) {
             res.status(500).send({
                 message: err.message || "Some error occurred while retrieving users."
             });
         } else {
-            res.send(User);
+            res.send(users);
         }
     });
 };
@@ -22,22 +22,9 @@ exports.findByID = function(req, res) {
             res.send(user);
         }
     });
-}
-
-exports.findByID = function(req, res) {
-    User.findByID(req.params.user_id, function(err, user) { 
-        if(err) {
-            res.status(500).send({
-                message: err.message || "Some error occurred while retrieving user."
-            });
-        } else {
-            res.send(user);
-        }
-    });
-}
+};
 
 exports.update = function(req, res) {
-    // Validate request
     if(!req.body) {
         return res.status(400).send({
             error: true,
@@ -45,7 +32,6 @@ exports.update = function(req, res) {
         });
     }
 
-    // Create a User
     const updatedUser = new User({
         name: req.body.name,
         email: req.body.email,
@@ -53,7 +39,6 @@ exports.update = function(req, res) {
         datetime_created: req.body.datetime_created
     });
 
-    // Save User in the database
     User.update(req.params.user_id, updatedUser, function(err, data) {
         if(err) {
             res.status(500).send({
@@ -61,15 +46,14 @@ exports.update = function(req, res) {
             });
         } else {
             res.send({
-                message: "User registered successfully!",
+                message: "User updated successfully!",
                 user_id: data
             });
         }
     });
-}
+};
 
 exports.create = function(req, res) {
-    // Validate request
     if(!req.body) {
         return res.status(400).send({
             error: true,
@@ -77,7 +61,6 @@ exports.create = function(req, res) {
         });
     }
 
-    // Create a User
     const newUser = new User({
         name: req.body.name,
         email: req.body.email,
@@ -85,16 +68,14 @@ exports.create = function(req, res) {
         datetime_created: req.body.datetime_created
     });
 
-    // Save User in the database
     User.create(newUser, function(err, data) {
         if(err) {
             if (err.type == "DUPLICATE_EMAIL"){
-                res.status(409).send({ // 409 Conflict
+                res.status(409).send({
                     error: true,
                     message: err.message
                 });
-            }
-            else {
+            } else {
                 res.status(500).send({
                     message: err.message || "Some error occurred while creating user."
                 });
@@ -103,10 +84,9 @@ exports.create = function(req, res) {
             res.send(data);
         }
     });
-}
+};
 
 exports.register = function(req, res) {
-    // Validate request
     if(!req.body) {
         return res.status(400).send({
             error: true,
@@ -114,7 +94,6 @@ exports.register = function(req, res) {
         });
     }
 
-    // Create a User
     const newUser = new User({
         name: req.body.name,
         email: req.body.email,
@@ -122,28 +101,32 @@ exports.register = function(req, res) {
         datetime_created: new Date()
     });
 
-    // Save User in the database
     User.create(newUser, function(err, data) {
         if(err) {
             if (err.type == "DUPLICATE_EMAIL"){
-                res.status(409).send({ // 409 Conflict
+                res.status(409).send({
                     error: true,
                     message: err.message
                 });
-            }
-            else {
+            } else {
                 res.status(500).send({
                     message: err.message || "Some error occurred while creating user."
                 });
             }
         } else {
+            req.session.authenticated = true;
+            req.session.user = {
+                user_id: data,
+                name: req.body.name,
+                email: req.body.email
+            };
             res.send({
                 message: "User registered successfully!",
                 user_id: data
             });
         }
     });
-}
+};
 
 exports.login = function(req, res) {
     if (!req.body.email || !req.body.password) {
@@ -164,12 +147,44 @@ exports.login = function(req, res) {
                 message: "Invalid email or password"
             });
         } else {
-            email = req.body.email 
-            password = req.body.password
-            req.session.user = { email, password };
-            res.send({message: "Login successful!", user: user[0]});
+            req.session.authenticated = true;
+            req.session.user = {
+                user_id: user[0].user_id,
+                name: user[0].name,
+                email: user[0].email
+            };
+            res.json({
+                message: "Login successful!",
+                user: req.session.user
+            });
         }
     });
+};
+
+exports.logout = function(req, res) {
+    req.session.destroy((err) => {
+        if (err) {
+            res.status(500).send({
+                message: "Error logging out"
+            });
+        } else {
+            res.json({
+                message: "Logout successful!"
+            });
+        }
+    });
+};
+
+exports.getCurrentUser = function(req, res) {
+    if (req.session.user && req.session.authenticated) {
+        res.json({
+            user: req.session.user
+        });
+    } else {
+        res.status(401).send({
+            message: "Not authenticated"
+        });
+    }
 };
 
 exports.delete = function(req, res) {
@@ -179,7 +194,7 @@ exports.delete = function(req, res) {
                 message: err.message || "Some error occurred while deleting user."
             });
         } else {
-            res.send({error: false, message: "User ${req.params.user_id} was deleted successfully!"});
+            res.send({error: false, message: `User ${req.params.user_id} was deleted successfully!`});
         }
     });
 };
