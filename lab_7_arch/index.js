@@ -11,6 +11,7 @@ const app = express();
 const port = 5000;
 // Convert all data to json
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('.'));
 
 // Enable CORS with credentials if frontend is on a different domain
