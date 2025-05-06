@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 const cors = require('cors');
 const path = require('path');
 const http = require('http');
@@ -25,10 +26,17 @@ app.use(
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: false,
+    store: new FileStore({
+      path: './sessions',
+      logFn: () => {}, // Suppress store logs
+      retries: 3, // Retry on file access errors
+      ttl: 24 * 60 * 60 // 1 day TTL
+    }),
     cookie: {
       secure: false, // Set to true in production with HTTPS
       maxAge: 24 * 60 * 60 * 1000, // 1 day
-      httpOnly: true // Prevent client-side JavaScript access to cookie
+      httpOnly: true,
+      sameSite: 'lax' // Helps with cross-origin requests
     }
   })
 );
