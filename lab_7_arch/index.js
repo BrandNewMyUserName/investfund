@@ -3,7 +3,6 @@ const session = require('express-session');
 const cors = require('cors');
 const path = require('path');
 const http = require('http');
-require('./index.js');
 const { initializeWebSocket, setupWebSocketServer } = require('./websocket.js');
 // const sessionConfig = require('./sessionConfig.js');
 
