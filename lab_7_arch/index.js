@@ -14,14 +14,21 @@ const port = 5000;
 app.use(express.json());
 app.use(express.static('.'));
 
+// Enable CORS with credentials if frontend is on a different domain
+app.use(cors({
+  origin: 'http://localhost:3000', // Adjust to your frontend URL
+  credentials: true
+}));
+
 app.use(
   session({
-    secret: 'your-secret-key', // Замініть на унікальний секретний ключ
+    secret: 'your-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, // У продакшені встановіть true з HTTPS
-      maxAge: 24 * 60 * 60 * 1000 // Час життя cookie (наприклад, 1 день)
+      secure: false, // Set to true in production with HTTPS
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      httpOnly: true // Prevent client-side JavaScript access to cookie
     }
   })
 );
