@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
 const http = require('http');
@@ -10,6 +11,12 @@ const { initializeWebSocket, setupWebSocketServer } = require('./websocket.js');
 const app = express();
 
 const port = 5000;
+
+const sessionsDir = '../lab_7_arch/sessions'; // TODO
+if (!fs.existsSync(sessionsDir)) {
+  fs.mkdirSync(sessionsDir);
+}
+
 // Convert all data to json
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,9 +35,10 @@ app.use(
     saveUninitialized: false,
     store: new FileStore({
       path: './sessions',
-      logFn: () => {}, // Suppress store logs
+      logFn: console.error, 
       retries: 3, // Retry on file access errors
-      ttl: 24 * 60 * 60 // 1 day TTL
+      ttl: 24 * 60 * 60, // 1 day TTL
+      fileExtension: '.json'
     }),
     cookie: {
       secure: false, // Set to true in production with HTTPS

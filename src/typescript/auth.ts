@@ -8,6 +8,8 @@ export function initializeAuthPopup() {
     
     const loginBtn = document.querySelector('.login-btn') as HTMLElement;
     const registerBtn = document.querySelector('.register-btn') as HTMLElement;
+
+    checkSession();
   
     // Event listeners for login and register button
     if (loginBtn) {
@@ -64,8 +66,7 @@ export function initializeAuthPopup() {
         if (response.ok) {
           alert('Login successful');
           authPopup.style.display = 'none';
-          // window.location.reload();
-          updateHeader();
+          updateHeader(result.user);
         } else {
           alert(result.message || 'Login failed');
         }
@@ -90,6 +91,7 @@ export function initializeAuthPopup() {
         if (response.ok) {
           alert('Registration successful');
           authPopup.style.display = 'none';
+          updateHeader({ name, email, user_id: result.user_id });
         } else {
           alert(result.message || 'Registration failed');
         }
@@ -100,14 +102,62 @@ export function initializeAuthPopup() {
     });
   }
 
-  function updateHeader() {
-    const userPanel = document.querySelector('.nav-right');
-    if(userPanel)
+  function checkSession() {
+    fetch('/api/user/current', {
+      method: 'GET',
+      credentials: 'include'
+    })
+      .then(response => {
+        console.log('Current user response status:', response.status); // Debug response
+        return response.json();
+      })
+      .then(data => {
+        console.log('Current user data:', data); // Debug data
+        if (data.user) {
+          updateHeader(data.user);
+        } 
+        else {
+          updateHeader(null);
+        }
+      })
+      .catch(error => {
+        console.error('Error checking session:', error);
+        updateHeader(null);
+      });
+}
+
+function updateHeader(user: { name: string, email: string, user_id: string } | null) {
+  const userPanel = document.querySelector('.nav-right');
+  if (userPanel) {
+    if (user) {
       userPanel.innerHTML = `
-      <div class="avatar">
-        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
-        </svg>
-      </div>
-      <button class="logout-btn" onclick="logout()">Logout</button>`;
+        <div class="avatar">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-购房 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
+          </svg>
+          <span>${user.name}</span>
+        </div>
+        <button class="logout-btn" onclick="logout()">Logout</button>`;
+    } else {
+      userPanel.innerHTML = `
+        <button class="login-btn" onclick="document.querySelector('#auth-popup').style.display = 'flex';">Sign in</button>
+        <button class="register-btn" onclick="document.querySelector('#auth-popup').style.display = 'flex';">Sign up</button>`;
+    }
   }
+}
+
+function logout() {
+  fetch('/api/user/logout', {
+    method: 'POST',
+    credentials: 'include'
+  })
+    .then(response => response.json())
+    .then(data => {
+      alert(data.message);
+      updateHeader(null);
+    })
+    .catch(error => {
+      console.error('Logout error:', error);
+      alert('An error occurred during logout');
+    });
+}

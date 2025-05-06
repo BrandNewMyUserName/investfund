@@ -113,16 +113,25 @@ exports.register = function(req, res) {
                     message: err.message || "Some error occurred while creating user."
                 });
             }
-        } else {
+        } 
+        else {
             req.session.authenticated = true;
             req.session.user = {
                 user_id: data,
                 name: req.body.name,
                 email: req.body.email
             };
-            res.send({
-                message: "User registered successfully!",
-                user_id: data
+            console.log('Register session:', req.session); // Debug
+            req.session.save((err) => {
+                if (err) {
+                    console.error('Session save error:', err);
+                    res.status(500).send({ message: 'Failed to save session' });
+                } else {
+                    res.send({
+                        message: "User registered successfully!",
+                        user_id: data
+                    });
+                }
             });
         }
     });
@@ -153,9 +162,17 @@ exports.login = function(req, res) {
                 name: user[0].name,
                 email: user[0].email
             };
-            res.json({
-                message: "Login successful!",
-                user: req.session.user
+            console.log('Login session:', req.session); // Debug
+            req.session.save((err) => {
+                if (err) {
+                    console.error('Session save error:', err);
+                    res.status(500).send({ message: 'Failed to save session' });
+                } else {
+                    res.json({
+                        message: "Login successful!",
+                        user: req.session.user
+                    });
+                }
             });
         }
     });
@@ -176,8 +193,9 @@ exports.logout = function(req, res) {
 };
 
 exports.getCurrentUser = function(req, res) {
-    if (req.session.user && req.session.authenticated) {
-        res.json({
+    console.log('getCurrentUser session:', req.session); // Debug
+    if (req.session.user) {
+        res.json({ message: "LOL",
             user: req.session.user
         });
     } else {
