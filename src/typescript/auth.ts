@@ -103,8 +103,7 @@ export function initializeAuthPopup() {
   }
 
   function checkSession() {
-    fetch('/api/user/current', {
-      method: 'GET',
+     fetch('/api/session', {
       credentials: 'include'
     })
       .then(response => {
@@ -126,18 +125,18 @@ export function initializeAuthPopup() {
       });
 }
 
+
 function updateHeader(user: { name: string, email: string, user_id: string } | null) {
   const userPanel = document.querySelector('.nav-right');
   if (userPanel) {
+    console.log("User", user);
     if (user) {
       userPanel.innerHTML = `
         <div class="avatar">
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-购房 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
-          </svg>
           <span>${user.name}</span>
         </div>
-        <button class="logout-btn" onclick="logout()">Logout</button>`;
+        <button class="logout-btn"">Logout</button>`;
+        userPanel.querySelector(".logout-btn")?.addEventListener('click', function() {logout()} )
     } else {
       userPanel.innerHTML = `
         <button class="login-btn" onclick="document.querySelector('#auth-popup').style.display = 'flex';">Sign in</button>

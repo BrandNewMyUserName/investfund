@@ -12,7 +12,7 @@ const app = express();
 
 const port = 5000;
 
-const sessionsDir = '../lab_7_arch/sessions'; // TODO
+const sessionsDir = './sessions'; // TODO
 if (!fs.existsSync(sessionsDir)) {
   fs.mkdirSync(sessionsDir);
 }
@@ -51,6 +51,9 @@ app.use(
 
 app.set('view engine', 'pug');
 app.set('pages', path.join(__dirname, '../src/pages'));
+app.get('/api/session', (req, res) => {
+  res.json({user: req.session.user || null });
+});
 
 app.get('/', (req, res) => {
   res.render('index', { user: req.session.user || null });
