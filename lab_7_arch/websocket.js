@@ -11,6 +11,7 @@ function setupWebSocketServer(server) {
       console.log('Browser client disconnected');
     });
   });
+  
 }
 
 async function fetchSymbols() {

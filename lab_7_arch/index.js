@@ -59,6 +59,10 @@ app.get('/', (req, res) => {
   res.render('index', { user: req.session.user || null });
 });
 
+// app.get('/portfolio', (req, res) => {
+//   res.render('/src/pages/portfolio', { user: req.session.user || null });
+// });
+
 const server = http.createServer(app)
 
 const InstrumentRouter = require('./router/instrument.router.js');

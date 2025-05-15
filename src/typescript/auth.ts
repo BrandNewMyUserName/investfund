@@ -135,7 +135,7 @@ function updateHeader(user: { name: string, email: string, user_id: string } | n
         <div class="avatar">
           <span>${user.name}</span>
         </div>
-        <button class="logout-btn"">Logout</button>`;
+        <button class="logout-btn">Logout</button>`;
         userPanel.querySelector(".logout-btn")?.addEventListener('click', function() {logout()} )
     } else {
       userPanel.innerHTML = `
